@@ -4,6 +4,8 @@ name: Build and release
 # - Always: publishes web/ to GitHub Pages (the PWA players install).
 # - When web/version.json has a version with no release yet: builds the
 #   Windows installer and creates a GitHub Release with it and a web zip for itch.io.
+# - Release notes come from release-notes/<version>.md (or _default.md). Editing that
+#   file for the current version updates the existing release page.
 on:
   push:
     branches: [main]
@@ -104,19 +106,25 @@ jobs:
           npm install --no-audit --no-fund
           npx tauri icon src-tauri/app-icon.png
 
+      - name: Release notes
+        id: notes
+        shell: bash
+        run: |
+          F="release-notes/$VERSION.md"
+          if [ ! -f "$F" ]; then
+            F=release-notes/_default.md
+            sed "s/{{VERSION}}/$VERSION/g" release-notes/_default.md > notes.tmp && F=notes.tmp
+          fi
+          { echo 'body<<NOTES_EOF'; cat "$F"; echo; echo 'NOTES_EOF'; } >> "$GITHUB_OUTPUT"
+
       - name: Build installer and create release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: v${{ env.VERSION }}
-          releaseName: Tidepool v${{ env.VERSION }}
-          releaseBody: |
-            **Play in your browser or install on your phone:** https://zhandermusic.github.io/tidepool/
-
-            **Windows:** download the `setup.exe` below and run it. Windows may show "Windows protected your PC" because the app isn't signed yet. Click **More info**, then **Run anyway**.
-
-            **itch.io:** upload `tidepool-web-v${{ env.VERSION }}.zip` as an HTML game.
+          releaseName: Tidepool ${{ env.VERSION }}
+          releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: false
           prerelease: false
 
@@ -127,3 +135,23 @@ jobs:
         run: |
           cd dist && 7z a "../tidepool-web-v$VERSION.zip" . >/dev/null && cd ..
           gh release upload "v$VERSION" "tidepool-web-v$VERSION.zip" --clobber
+
+  notes:
+    name: Update release notes
+    needs: check
+    if: needs.check.outputs.release_needed == 'false'
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sync notes for the current release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          F="release-notes/$VERSION.md"
+          if [ -f "$F" ]; then
+            gh release edit "v$VERSION" --notes-file "$F" --title "Tidepool $VERSION"
+          else
+            echo "No $F, leaving the release notes as they are."
+          fi

@@ -1,36 +1,54 @@
-# Tidepool
+<p align="center">
+  <img src="web/icons/icon-192.png" width="112" alt="Tidepool icon">
+</p>
 
-A calm idle game about growing a tide pool.
+<h1 align="center">Tidepool</h1>
 
-- **Play / install on your phone:** https://zhandermusic.github.io/tidepool/
-- **Windows app and downloads:** [Releases](https://github.com/ZhanderMusic/tidepool/releases)
+<p align="center">
+  A calm idle game about growing a tide pool, from a single polyp to a leviathan-filled deep.
+</p>
 
-## How releases work
+<p align="center">
+  <a href="https://zhandermusic.github.io/tidepool/"><b>▶ Play now</b></a> ·
+  <a href="https://github.com/ZhanderMusic/tidepool/releases/latest">Download for Windows</a>
+</p>
 
-Everything comes from the `web/` folder. Pushing to `main` runs the **Build and release** workflow:
+---
 
-1. The website (the installable PWA) updates on GitHub Pages every time.
-2. If `web/version.json` has a version with no release yet, GitHub also builds the Windows installer and creates a release `vX.Y.Z` with:
-   - `Tidepool_X.Y.Z_x64-setup.exe` (Windows)
-   - `tidepool-web-vX.Y.Z.zip` (upload to itch.io as an HTML game)
+## Now playing
 
-### Shipping a new version
+**Halloween event, until November 1.** Four limited exotic skins in the Halloween shop: Haunted harbor, Jack-o'-lantern, Spooky spirits, and the Lantern phantom companion.
 
-Bump the version in **both** places, which must match (the build stops if they don't):
+**Season 1: Brinelight, until November 21.** Climb 100 pass tiers of skins and shells.
 
-- `web/version.json`
-- `GAME_VERSION` near the top of the script in `web/index.html`
+## How to play
 
-Version rule: only bump the minor or patch number (1.5.0 → 1.6.0 or 1.5.1). The major number (2.0.0) is reserved for new seasons.
+1. **Tap the water** to gather plankton.
+2. **Grow your reef.** Spend plankton on polyps, sponges, anemones, kelp beds and deeper creatures that gather plankton for you, even while you're away.
+3. **Catch blooms.** Glowing blooms drift by now and then. Tap them for a Frenzy or Surge boost.
+4. **Spawn** when growth slows down. Your reef starts over, but you earn **pearls** for permanent upgrades that make every run faster.
+5. **Ascend** to reach new ranks, from Tidewatcher to Tide Sovereign. Each one unlocks deeper reefs and new tides.
 
-Players see an in-game "new version available" notice after a release: web and phone players just reload, and the desktop app links to the latest release.
+## Features
 
-## Files
+- **Dozens of reef creatures** across ten ascensions, each deeper than the last
+- **Pearl and shell upgrades** that carry over between runs
+- **Season pass** with 100 tiers of rewards
+- **Missions and a daily catch** for extra shells and XP
+- **Trophies** for milestones big and small
+- **Skins** for the water, reef colors, tap effect and a companion, from common to exotic
+- **Offline progress**, so your pool keeps growing while you're away
+- **Save codes** to back up your progress or move it to another device
+- **Light and dark mode**, and it plays offline once loaded
 
-| Path | What it is |
-| --- | --- |
-| `web/index.html` | The game |
-| `web/version.json` | Current version, also what the update notice checks |
-| `web/manifest.webmanifest`, `web/sw.js`, `web/icons/` | Makes it installable and playable offline |
-| `src-tauri/` | Windows app wrapper (Tauri) |
-| `.github/workflows/release.yml` | The automatic build |
+## Install it
+
+Tidepool runs in your browser, and you can install it like an app:
+
+- **iPhone / iPad:** open the [game link](https://zhandermusic.github.io/tidepool/) in Safari, then tap **Share → Add to Home Screen**.
+- **Android:** open the link in Chrome and tap **Install** (or **⋮ → Add to Home screen**).
+- **Windows:** download the setup file from the [latest release](https://github.com/ZhanderMusic/tidepool/releases/latest). If Windows shows "Windows protected your PC," click **More info → Run anyway**.
+
+The phone and web versions update automatically. The Windows app tells you when a new version is out.
+
+> **Tip:** Your progress is saved on your device. Copy a save code now and then (Trophies tab → Save data) so you never lose it.
