@@ -1,0 +1,12 @@
+{
+  "name": "tidepool",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Desktop build tooling for Tidepool. The game version lives in web/version.json.",
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

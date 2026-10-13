@@ -1,0 +1,129 @@
+name: Build and release
+
+# Runs on every push to main.
+# - Always: publishes web/ to GitHub Pages (the PWA players install).
+# - When web/version.json has a version with no release yet: builds the
+#   Windows installer and creates a GitHub Release with it and a web zip for itch.io.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      release_needed: ${{ steps.v.outputs.release_needed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read and verify version
+        id: v
+        run: |
+          V=$(jq -r .version web/version.json)
+          if ! echo "$V" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::web/version.json version '$V' is not like 1.2.3"; exit 1
+          fi
+          G=$(grep -oE "const GAME_VERSION='[^']+'" web/index.html | sed -E "s/.*'([^']+)'/\1/")
+          if [ "$V" != "$G" ]; then
+            echo "::error::Version mismatch: web/version.json says $V but GAME_VERSION in web/index.html says $G"; exit 1
+          fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$V" >/dev/null 2>&1; then
+            echo "Release v$V already exists, only the website will update."
+            echo "release_needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "New version v$V, a release will be built."
+            echo "release_needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  pages:
+    name: Publish website (PWA)
+    needs: check
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare site
+        run: |
+          rm -rf dist && cp -r web dist
+          sed -i "s/__VERSION__/${{ needs.check.outputs.version }}/" dist/sw.js
+          touch dist/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  release:
+    name: Build Windows app and release
+    needs: check
+    if: needs.check.outputs.release_needed == 'true'
+    runs-on: windows-latest
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Prepare game files
+        shell: bash
+        run: |
+          rm -rf dist && cp -r web dist
+          sed -i "s/__VERSION__/$VERSION/" dist/sw.js
+          node -e "const f='src-tauri/tauri.conf.json',fs=require('fs'),c=JSON.parse(fs.readFileSync(f));c.version=process.env.VERSION;fs.writeFileSync(f,JSON.stringify(c,null,2));"
+
+      - name: Install build tools and icons
+        shell: bash
+        run: |
+          npm install --no-audit --no-fund
+          npx tauri icon src-tauri/app-icon.png
+
+      - name: Build installer and create release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v${{ env.VERSION }}
+          releaseName: Tidepool v${{ env.VERSION }}
+          releaseBody: |
+            **Play in your browser or install on your phone:** https://zhandermusic.github.io/tidepool/
+
+            **Windows:** download the `setup.exe` below and run it. Windows may show "Windows protected your PC" because the app isn't signed yet. Click **More info**, then **Run anyway**.
+
+            **itch.io:** upload `tidepool-web-v${{ env.VERSION }}.zip` as an HTML game.
+          releaseDraft: false
+          prerelease: false
+
+      - name: Attach web zip for itch.io
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dist && 7z a "../tidepool-web-v$VERSION.zip" . >/dev/null && cd ..
+          gh release upload "v$VERSION" "tidepool-web-v$VERSION.zip" --clobber
