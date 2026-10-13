@@ -36,7 +36,7 @@
 - **Season pass** with 100 tiers of rewards
 - **Missions and a daily catch** for extra shells and XP
 - **Trophies** for milestones big and small
-- **Skins** for the water, reef colors, tap effect and a companion, from common to exotic
+- **Skins** for the water, reef colors, tap effect and a companion, from common to exotic, plus a rotating Tide market that restocks every 5 hours
 - **Offline progress**, so your pool keeps growing while you're away
 - **Save codes** to back up your progress or move it to another device
 - **Light and dark mode**, and it plays offline once loaded
