@@ -108,6 +108,9 @@ nav .dot{position:absolute;top:9px;margin-left:3px;width:8px;height:8px;border-r
 
 .seg{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--seg);margin:4px 0 2px}
 .seg button{flex:1;border:0;background:none;font-size:14px;font-weight:650;color:var(--ink2);padding:7px 0;border-radius:9px;cursor:pointer}
+.seg.tabs{overflow-x:auto;scrollbar-width:none;margin-top:6px}
+.seg.tabs::-webkit-scrollbar{display:none}
+.seg.tabs button{flex:0 0 auto;padding:7px 14px;white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
 .sub{margin:4px 0 8px}
 
@@ -477,6 +480,19 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 #tiers .trow .name{font-size:14.5px;line-height:1.2}
 #tiers .trow .meta{font-size:12px;margin-top:3px}
 #tiers .trow .buy{width:100%;min-width:0}
+#tiers .art{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:74px}
+.art .sw{width:64px;height:64px;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:3px;background:var(--seg)}
+.art .sw i{width:14px;height:14px;border-radius:50%}
+.art .chips2{display:flex;gap:12px;justify-content:center}
+.art .ri{display:flex;flex-direction:column;align-items:center;gap:3px}
+.art .ri b{font-size:15px;font-weight:750;font-variant-numeric:tabular-nums}
+.art .g{width:40px;height:40px;border-radius:50%;display:block}
+.art .g.shell{background:radial-gradient(circle at 35% 30%,#fff7f0,#ffc8ae 55%,#e8907a);box-shadow:inset 0 -3px 4px rgba(120,50,30,.3)}
+.art .g.dbl{background:radial-gradient(circle at 35% 30%,#fffbe6,#ffd45a 55%,#c98d12);box-shadow:inset 0 -3px 4px rgba(120,70,0,.35)}
+#tiers .trow.big .art .g{width:54px;height:54px}
+#tiers .trow.big .art .ri b{font-size:18px}
+.rcat:empty{display:none}
+.rcat{font-size:11.5px;font-weight:650;color:var(--ink2);margin-top:2px}
 #tiers .trow.now{box-shadow:inset 0 3px 0 var(--coral);padding-left:8px}
 #tiers .trow.big{flex-basis:140px;border-color:transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,#f6b99b,#ffd36a,#fff0e6,#f6b99b) border-box;box-shadow:0 0 14px rgba(246,185,155,.45)}
 #tiers .trow.big .tb{width:54px;height:54px;font-size:19px}
@@ -552,7 +568,7 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 const $=s=>document.querySelector(s);
 const KEY='tidepool-save-v1';
 /* ---- release settings: bump GAME_VERSION and version.json together on every release ---- */
-const GAME_VERSION='1.6.11';
+const GAME_VERSION='1.6.13';
 const UPDATE_URL='https://zhandermusic.github.io/tidepool/version.json';   // live version.json that desktop builds check for updates
 const STORE_URL='https://github.com/ZhanderMusic/tidepool/releases/latest';    // where installed (desktop) builds send players for updates
 const TAU=6.2832,rand=Math.random;
@@ -1019,6 +1035,8 @@ function skinSrc(key){
 }
 
 const PATCH=[
+ {v:'1.6.13',t:'A tidier reef and a prettier Track',l:['The reef scene is arranged in three depth rows, and each reef type keeps its own stretch of the floor, so it no longer piles up.','Pass Track rewards show icons instead of text, and skin rewards show a preview of the skin.']},
+ {v:'1.6.12',t:'Sort by ascension',l:['Reef and Tide have a new row of tabs under the buy buttons. Pick All, Base or any ascension you have reached to see just those reefs and tide upgrades.']},
  {v:'1.6.11',major:1,anim:'treasure',t:'Treasure chests',l:['A new Treasure tab in the Shop. Spend Doubloons to pick one of three chests.','Earn Doubloons from missions, the daily catch, every 5th pass tier and each ascension. Everyone starts with 5, and players who are already far along get Doubloons for the tiers and ascensions they earned before.','Prizes: shells, pass XP, XP boosts, pearls, Tide crystals (after ascension 3), small permanent production boosts, legendary vouchers and 8 new exotic skins.','Pity: a guaranteed exotic by your 25th chest. Skins you own never drop again.']},
  {v:'1.6.10',t:'Tidier reefs and a bigger market',l:['Pearls cost more at every ascension. You now need about 25 of a tier\'s last reef to earn that ascension\'s pearls.','Each reef shows a progress bar to its next doubling and the total plankton per second it makes.','The Tide market restocks every 10 minutes and has 10 new skins.','Settings has a Patch notes button and a Check for updates button.']},
  {v:'1.6.9',t:'Pearls cost more, reefs give XP',l:['The plankton needed per pearl grows with every ascension.','Every reef you buy gives 0.25 pass XP.']},
@@ -1440,8 +1458,9 @@ const subSeg=(arr)=>`<div class="seg sub" role="group">${arr.map((a,i)=>`<button
 
 $('#p-reef').innerHTML=
   `<div class="seg" id="seg" role="group" aria-label="Buy amount">${['1','10','100','max'].map(m=>`<button data-mode="${m}">${m==='max'?'Max':'×'+m}</button>`).join('')}</div>`+
+  `<div class="seg tabs" id="gtabs" role="group" aria-label="Show reefs by ascension" hidden></div>`+
   `<div id="gens"></div><p class="note" id="teaser" hidden>Deeper water holds more.</p>`;
-$('#p-tide').innerHTML=`<div id="ups"></div><p class="note">Upgrades surface as your reef grows. They clear when you spawn. Each ascension adds 3 more.</p>`;
+$('#p-tide').innerHTML=`<div class="seg tabs" id="utabs" role="group" aria-label="Show tide upgrades by ascension" hidden></div><div id="ups"></div><p class="note">Upgrades surface as your reef grows. They clear when you spawn. Each ascension adds 3 more.</p>`;
 $('#p-spawn').innerHTML=
   subSeg([['spawn','Spawn'],['ascend','Ascend']])+
   `<div data-view="spawn">
@@ -1619,7 +1638,7 @@ const TR=[];
 for(const n of TLIST){
   const row=document.createElement('div');
   row.className='row trow'+(n>TIERS?' big':'');
-  row.innerHTML=`<div class="tb">${n}</div><div class="info"><div class="name"></div><div class="meta"></div></div><button class="buy shellb slim" data-tier="${n}"><span class="l2"></span></button>`;
+  row.innerHTML=`<div class="tb">${n}</div><div class="art"></div><div class="info"><div class="name"></div><div class="rcat"></div><div class="meta"></div></div><button class="buy shellb slim" data-tier="${n}"><span class="l2"></span></button>`;
   const r=tierReward(n);
   if(r.skin) row.className+=' r-'+rarOf(r.skin);
   row.querySelector('.name').textContent=rwText(r);
@@ -1685,6 +1704,23 @@ const SKR={};
   }
 })();
 
+(function(){
+  for(const n of TLIST){
+    const o=TR[n],r=tierReward(n),art=o.row.querySelector('.art'),nm=o.row.querySelector('.name');
+    let h=r.skin?'<span class="sw"></span>':'';
+    const chips=[];
+    if(r.shells) chips.push(['shell','+'+r.shells]);
+    if(r.dbl) chips.push(['dbl','+'+r.dbl]);
+    if(chips.length) h+='<span class="chips2">'+chips.map(c=>'<span class="ri"><i class="g '+c[0]+'"></i><b>'+c[1]+'</b></span>').join('')+'</span>';
+    art.innerHTML=h;
+    o.row.title=rwText(r);
+    if(r.skin){
+      const sw=SKR[r.skin].b.querySelector('.sw'),dst=art.querySelector('.sw');dst.style.background=sw.style.background;dst.innerHTML=sw.innerHTML;
+      const pp=r.skin.split(':');nm.textContent=CAT[pp[0]].items[pp[1]];
+      o.row.querySelector('.rcat').textContent=CAT[pp[0]].title+', '+RN[rarOf(r.skin)];
+    }else nm.hidden=true;
+  }
+})();
 const HR={};
 (function(){
   const el=$('#hal');
@@ -1888,6 +1924,8 @@ document.addEventListener('click',e=>{
   else if(d.mclaimall!==undefined) claimAllMissions(b);
   else if(d.ov!==undefined) claimOverflow(b);
   else if(d.daily!==undefined) claimDaily(b);
+  else if(d.gtier!==undefined){gTier=d.gtier==='all'?'all':+d.gtier;updateUI();}
+  else if(d.utier!==undefined){uTier=d.utier==='all'?'all':+d.utier;updateUI();}
   else if(d.skin) equipSkin(d.skin);
   else if(d.chest!==undefined) pickChest(+d.chest);
   else if(d.again!==undefined) trAgain();
@@ -2085,14 +2123,27 @@ function updateUI(){
   else if(tab==='settings') updSettings();
   else if(tab==='trophy') updTrophy();
 }
+let gTier='all',uTier='all',tabSig={};
+function tierTabs(elId,key,cur){
+  const el=$(elId),n=Math.min(S.ascensions,MAXASC);
+  if(cur!=='all'&&cur>n){if(key==='g') gTier='all';else uTier='all';cur='all';}
+  el.hidden=n<1;
+  const sig=n+'|'+cur;
+  if(tabSig[key]===sig) return;
+  tabSig[key]=sig;
+  let h='<button data-'+key+'tier="all" aria-pressed="'+(cur==='all')+'">All</button>';
+  for(let a=0;a<=n;a++) h+='<button data-'+key+'tier="'+a+'" aria-pressed="'+(cur===a)+'">'+(a?'Ascension '+a:'Base')+'</button>';
+  el.innerHTML=h;
+}
 function updReef(){
+  tierTabs('#gtabs','g',gTier);
   segBtns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===S.mode)));
   let hiddenGen=false;
   G.forEach((g,i)=>{
     const r=R[i];
     if(!genUnlocked(i)){r.row.hidden=true;return;}
     const rev=i===0||S.owned[i]>0||S.runTotal>=g.base*.5;
-    r.row.hidden=!rev;
+    r.row.hidden=!rev||(gTier!=='all'&&genAsc(i)!==gTier);
     if(!rev){hiddenGen=true;return;}
     const per=g.rate*genMult(i)*globalMult();
     setText(r.own,fmt(S.owned[i]));
@@ -2111,10 +2162,11 @@ function updReef(){
   setText(tz,(hiddenGen?'Deeper water holds more. ':'')+(more?'Each ascension unlocks 5 deeper reefs and 3 tides.':''));
 }
 function updTide(){
+  tierTabs('#utabs','u',uTier);
   for(const id in UR){
     const o=UR[id],u=o.u,bought=!!S.runUp[id];
     const vis=bought||((u.asc||0)<=S.ascensions&&S.runTotal>=u.cost*.1&&(u.gen===undefined||S.owned[u.gen]>0));
-    o.row.hidden=!vis;
+    o.row.hidden=!vis||(uTier!=='all'&&(u.asc||0)!==uTier);
     if(!vis) continue;
     o.row.style.order=bought?1000+o.idx:o.idx;
     o.row.classList.toggle('done',bought);
@@ -2490,9 +2542,15 @@ function drawGL(i,x,y,s,k,a,cc,fx,sd){
   cx.restore();
 }
 const SCALE=[1,1,1,1.35,1,1.15,1.1];
+const SLOT=[],ROWOFF=[0,22,42],ROWSC=[1,.82,.66];
+function layoutSlots(){
+  const rows=[[],[],[]];
+  for(let i=0;i<G.length;i++){if(i===7||!genUnlocked(i)) continue;rows[i%3].push(i);}
+  rows.forEach((arr,r)=>arr.forEach((i,k)=>{const w=.9*W/arr.length;SLOT[i]={row:r,cx:.05*W+w*(k+.5),w};}));
+}
 function sprPos(i,j){
-  const sd=i*40+j+1,U=Math.max(.75,Math.min(1.2,H/200));
-  return{i,sd,x:(.06+.88*rnd(sd*1.37))*W,y:H-26+4+rnd(sd*2.9)*14,s:(.62+.38*rnd(sd*4.1))*(i<7?SCALE[i]:.95)*U};
+  const sd=i*40+j+1,U=Math.max(.75,Math.min(1.2,H/200)),sl=SLOT[i]||{row:0,cx:W/2,w:.88*W},rr=sl.row;
+  return{i,sd,row:rr,x:sl.cx+(rnd(sd*1.37)-.5)*sl.w*.95,y:H-22+rnd(sd*2.9)*(14-rr*3)-ROWOFF[rr]*U,s:(.62+.38*rnd(sd*4.1))*(i<7?SCALE[i]:.95)*U*ROWSC[rr]};
 }
 const prevVis=[],born={};let visInit=false;
 
@@ -2884,6 +2942,7 @@ function frame(ts){
   c.fillRect(0,floorY+16,W,H);
 
   const list=[];
+  layoutSlots();
   for(let i=0;i<G.length;i++){
     if(i===7) continue;
     const k=vis(S.owned[i],i>7?2:0);
@@ -2898,10 +2957,19 @@ function frame(ts){
     for(let j=0;j<k;j++) list.push(sprPos(i,j));
   }
   visInit=true;
-  list.sort((a,b)=>a.y-b.y);
+  list.sort((a,b)=>b.row-a.row||a.y-b.y);
   lastN=list.length;
   const wid=S.equip.water,rid=curReef,pid=S.equip.pet,rfx=REEFFX[rid]||null;
+  let curRow=-1;
   for(const o of list){
+    if(o.row!==curRow){
+      curRow=o.row;
+      if(curRow>0){
+        const ty=H-22-ROWOFF[curRow]*U+(14-curRow*3)*.5+5;
+        c.globalAlpha=curRow===2?.42:.68;c.fillStyle=P.sand;c.beginPath();c.moveTo(0,ty+6);
+        c.quadraticCurveTo(W*.3,ty-3,W*.55,ty+4);c.quadraticCurveTo(W*.8,ty+10,W,ty+1);c.lineTo(W,H);c.lineTo(0,H);c.closePath();c.fill();c.globalAlpha=1;
+      }
+    }
     let k=Math.sin(T*1.1+o.sd*1.9)*GL[tplOf(o.i)].sw*(RM?.3:1);
     for(const pl of pulses){const R=10+pl.a*150,e=Math.abs(Math.hypot(o.x-pl.x,o.y-16-pl.y)-R);if(e<30) k+=(o.x<pl.x?-1:1)*.45*(1-pl.a)*(1-e/30);}
     const bt=born[o.sd],age=bt===undefined?9:T-bt;
@@ -2930,7 +2998,7 @@ function frame(ts){
       const st=rfx.hue==='rainbow'?Math.floor(((o.x/W)*360+T*70)%360/10):rfx.hue==='teal'?Math.floor((T*12+o.sd*13)%360/10):rfx.hue==='hallow'?Math.floor((T*28+o.sd*11)%360/10):rfx.hue==='aurora'?Math.floor((T*16+o.x*.15)%360/10):Math.floor((T*45+o.sd*17)%360/10);
       cols=hueCols(rid,o.i,st,rfx.hue);
     }
-    drawGL(o.i,o.x,o.y,r2,k,1,cols,rfx,o.sd);
+    drawGL(o.i,o.x,o.y,r2,k,1-.07*o.row,cols,rfx,o.sd);
   }
 
   const pet=PETS[S.equip.pet];
