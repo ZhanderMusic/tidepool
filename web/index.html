@@ -189,6 +189,18 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 .skin.lock{opacity:.6;cursor:default}
 .rb{position:relative;border:2px solid var(--rc,#9aa5ab);border-radius:14px}
 .hal{margin:6px 0 14px}
+.hstrip{display:flex;flex-direction:row;gap:10px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 12px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.hstrip>*{scroll-snap-align:start}
+.hstrip .hrow{flex:0 0 150px;width:150px;height:150px;box-sizing:border-box;margin:0;padding:10px 8px;flex-direction:column;justify-content:space-between;align-items:center;gap:4px;text-align:center}
+.hstrip .hrow .sw{width:44px;height:44px}
+.hstrip .hrow .hi{flex:0 0 auto;width:100%}
+.hstrip .hrow .hn{font-size:13px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hstrip .hrow .hm{font-size:11px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hstrip .hrow .buy{min-width:0;width:100%;box-sizing:border-box;padding:5px 6px}
+.hstrip .hrow .buy .l2{font-size:13px}
+.chests{margin:12px 0}
+.chest{aspect-ratio:1;justify-content:center}
+
 .hal .hh{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:8px}
 .hal .ht{font-weight:800;font-size:16px;color:#ff8a1f}
 .hrow{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;border-radius:14px}
@@ -434,6 +446,23 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 @keyframes mjpop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
 @keyframes mjup{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.major *,.major{animation-duration:.01s!important;animation-iteration-count:1!important}.major .coin,.major .rays{display:none}}
+/* ascension splash */
+.major[data-theme="ascension"]{background:radial-gradient(circle at 50% 28%,#4a3a8f 0%,#150f33 74%);color:#efe9ff}
+.major[data-theme="ascension"] .rays{background:repeating-conic-gradient(rgba(185,168,255,.08) 0 8deg,transparent 8deg 22deg)}
+.major[data-theme="ascension"] .mjb{color:#1c1442;background:linear-gradient(100deg,#b9a8ff,#fff,#b9a8ff) 0 0/200% 100%;animation:mjsh 2.4s linear infinite}
+.major[data-theme="ascension"] .mjv{text-shadow:0 0 24px rgba(185,168,255,.6)}
+.major[data-theme="ascension"] li{color:#d9d0f7}
+.major[data-theme="ascension"] li:before{background:#b9a8ff}
+.major[data-theme="ascension"] .go{background:linear-gradient(135deg,#e4dcff,#a99bea);color:#1c1442}
+.major .pl{position:absolute;bottom:-24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#e3dcfb 55%,#a99bea);animation:mjrise linear infinite}
+@keyframes mjrise{to{transform:translateY(-112vh)}}
+.major .mjpearl{width:170px;height:170px;overflow:visible}
+.major .mjpearl .r{fill:none;stroke:#cfc3ff;transform-box:fill-box;transform-origin:center;animation:mjpulse 3s ease-out infinite}
+.major .mjpearl .r:nth-child(3){animation-delay:1s}
+.major .mjpearl .r:nth-child(4){animation-delay:2s}
+.major .mjpearl .core{transform-box:fill-box;transform-origin:center;animation:mjbob 2.4s ease-in-out infinite}
+@keyframes mjpulse{0%{transform:scale(.45);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+@media (prefers-reduced-motion:reduce){.major .pl{display:none}}
 /* unique rank animations */
 .prow[data-rk="2"]::before{background:radial-gradient(circle,hsla(var(--h),90%,78%,.55) 0 2px,transparent 3px) 0 0/34px 44px,radial-gradient(circle,hsla(var(--h),90%,78%,.4) 0 1.6px,transparent 2.6px) 17px 22px/34px 44px;animation:rkrise 5s linear infinite}
 .rankcard[data-rk="2"]::before{background:radial-gradient(circle,hsla(var(--h),90%,78%,.55) 0 2px,transparent 3px) 0 0/34px 44px,radial-gradient(circle,hsla(var(--h),90%,78%,.4) 0 1.6px,transparent 2.6px) 17px 22px/34px 44px;animation:rkrise 5s linear infinite}
@@ -568,7 +597,7 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 const $=s=>document.querySelector(s);
 const KEY='tidepool-save-v1';
 /* ---- release settings: bump GAME_VERSION and version.json together on every release ---- */
-const GAME_VERSION='1.6.14';
+const GAME_VERSION='1.6.15';
 const UPDATE_URL='https://zhandermusic.github.io/tidepool/version.json';   // live version.json that desktop builds check for updates
 const STORE_URL='https://github.com/ZhanderMusic/tidepool/releases/latest';    // where installed (desktop) builds send players for updates
 const TAU=6.2832,rand=Math.random;
@@ -723,16 +752,16 @@ const RLORE=[
 ];
 const RHUE=[200,165,185,225,250,275,300,210,45,40];
 const RANK=[
-  {name:'Tidewatcher',mult:2,req:300},
-  {name:'Reefkeeper',mult:3,req:1500},
-  {name:'Deepcaller',mult:4,req:5000},
-  {name:'Stormwarden',mult:6,req:18000},
-  {name:'Moonwright',mult:10,req:60000},
-  {name:'Starcurrent',mult:16,req:180000},
-  {name:'Dreamtide',mult:30,req:550000},
-  {name:'Silverwake',mult:60,req:1.8e6},
-  {name:'Oceanheart',mult:150,req:5e6},
-  {name:'Tide Sovereign',mult:500,req:1.5e7}
+  {name:'Tidewatcher',mult:2,req:450},
+  {name:'Reefkeeper',mult:3,req:2250},
+  {name:'Deepcaller',mult:4,req:7500},
+  {name:'Stormwarden',mult:6,req:27000},
+  {name:'Moonwright',mult:10,req:90000},
+  {name:'Starcurrent',mult:16,req:270000},
+  {name:'Dreamtide',mult:30,req:825000},
+  {name:'Silverwake',mult:60,req:2.7e6},
+  {name:'Oceanheart',mult:150,req:7.5e6},
+  {name:'Tide Sovereign',mult:500,req:2.25e7}
 ];
 // every ascension unlocks 5 deeper reefs (and 3 tides, below)
 const EXT_NAMES=[
@@ -820,7 +849,7 @@ const PERMA=[
   {id:'auto',name:'Auto-pulse',desc:'Taps once per second by itself, per level.',base:5,gr:1.9,max:10,fx:l=>l+(l===1?' tap':' taps')+' per second'},
   {id:'colony',name:'Founding colony',desc:'Start each spawn with polyps and sponges already growing.',base:3,gr:2,max:10,fx:l=>{const c=colony(l);return c[0]+' polyps, '+c[1]+' sponges';}},
   {id:'seed',name:'Seed stock',desc:'Start each spawn with plankton in hand.',base:2,gr:2.1,max:10,fx:l=>l?fmt(seedAmount(l)):'none'},
-  {id:'luster',name:'Pearl luster',desc:'+10% pearls from every spawn, per level.',base:6,gr:2.2,max:10,fx:l=>'+'+l*10+'%'},
+  {id:'luster',name:'Pearl luster',desc:'+1% to the most pearls one spawn can pay, per level.',base:6,gr:2.2,max:10,fx:l=>'+'+l+'%'},
   {id:'clock',name:'Tidal clock',desc:'Gather more plankton while you are away.',base:3,gr:2.4,max:8,fx:l=>(20+l*10)+'% of normal'},
   {id:'glow',name:'Bioluminescence',desc:'Blooms appear sooner and their bonuses last longer.',base:4,gr:1.8,max:10,fx:l=>l?Math.round((1-Math.pow(.92,l))*100)+'% sooner, +'+l*10+'% longer':'normal'}
 ];
@@ -831,13 +860,13 @@ const SHOP=[
   {id:'study',name:'Study the tides',desc:'Pass XP +10% per level.',base:4,gr:1.6,max:10,fx:l=>'+'+l*10+'%'},
   {id:'slots',name:'Extra clipboard',desc:'One more mission slot per level.',base:12,gr:2.5,max:3,fx:l=>(3+l)+' missions'},
   {id:'bait',name:'Bloom bait',desc:'Blooms appear 5% sooner per level.',base:5,gr:1.5,max:10,fx:l=>Math.round((1-Math.pow(.95,l))*100)+'% sooner'},
-  {id:'polish',name:'Pearl polish',desc:'+4% pearls from every spawn, per level.',base:6,gr:1.6,max:15,fx:l=>'+'+l*4+'%'},
+  {id:'polish',name:'Pearl polish',desc:'+1% to the most pearls one spawn can pay, per level.',base:6,gr:1.6,max:15,fx:l=>'+'+l+'%'},
   {id:'anchor',name:'Anchor',desc:'Away time counts for 4 more hours per level.',base:4,gr:1.7,max:6,fx:l=>(12+4*l)+' hours max'}
 ];
 const CRYS=[
   {id:'cres',name:'Tide resonance',desc:'All production ×1.1 per level.',base:20,gr:1.35,max:20,fx:l=>'×'+fmt(Math.pow(1.1,l))},
   {id:'cbloom',name:'Crystal bloom',desc:'+15% crystal income per level.',base:15,gr:1.4,max:10,fx:l=>'+'+l*15+'%'},
-  {id:'cfacet',name:'Pearl facets',desc:'+6% pearls from every spawn, per level.',base:30,gr:1.4,max:10,fx:l=>'+'+l*6+'%'},
+  {id:'cfacet',name:'Pearl facets',desc:'+1% to the most pearls one spawn can pay, per level.',base:30,gr:1.4,max:10,fx:l=>'+'+l+'%'},
   {id:'ctap',name:'Prism grip',desc:'Taps gather 20% more per level.',base:25,gr:1.4,max:10,fx:l=>'+'+l*20+'%'},
   {id:'cecho',name:'Deep echo',desc:'+25% more crystals when you ascend, per level.',base:40,gr:1.5,max:8,fx:l=>'+'+l*25+'%'}
 ];
@@ -1035,6 +1064,7 @@ function skinSrc(key){
 }
 
 const PATCH=[
+ {v:'1.6.15',major:1,anim:'ascension',t:'A new ascension system',l:['A spawn can now pay at most 15% of the pearls you need to ascend. Pearl luster, Pearl polish and Pearl facets each add 1% to that limit per level, up to 50% with all 35 levels.','Every ascension needs 50% more pearls than before.','The Spawn tab shows how many pearls a spawn can pay at most, and tells you when you have reached it.','Pearls and pearl bonuses you already have are kept.','Skins you do not own yet are now all in the hidden list, including trophy and ascension skins.','The Shop skins, the Halloween shop and the chests are now square cards. The skin rows scroll sideways.']},
  {v:'1.6.14',t:'Pearls cost more from ascension 3',l:['From ascension 3 on, pearls need about 75 of that tier\'s last reef instead of 25, so an ascension takes several spawns.','Pearls and pearl bonuses you already have are kept. Only new spawns use the new cost.']},
  {v:'1.6.13',t:'A tidier reef and a prettier Track',l:['The reef scene is arranged in three depth rows, and each reef type keeps its own stretch of the floor, so it no longer piles up.','Pass Track rewards show icons instead of text, and skin rewards show a preview of the skin.']},
  {v:'1.6.12',t:'Sort by ascension',l:['Reef and Tide have a new row of tabs under the buy buttons. Pick All, Base or any ascension you have reached to see just those reefs and tide upgrades.']},
@@ -1122,12 +1152,15 @@ function trApply(kind){
   return{kind:'exotic',rar:'exotic',name:skinName(k)};
 }
 const MJ_ART={
+  ascension:()=>'<div class="mjc"><svg class="mjpearl" viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="mjpg" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#e3dcfb"/><stop offset="1" stop-color="#a99bea"/></radialGradient></defs><circle class="r" cx="60" cy="60" r="40" stroke-width="3"/><circle class="r" cx="60" cy="60" r="40" stroke-width="3"/><circle class="r" cx="60" cy="60" r="40" stroke-width="3"/><circle class="core" cx="60" cy="60" r="17" fill="url(#mjpg)"/></svg></div>',
   treasure:()=>'<div class="mjc">'+CHEST_SVG+CHEST_SVG+CHEST_SVG+'</div>'
 };
 function showMajor(p){
   const old=document.getElementById('major');if(old) old.remove();
   const el=document.createElement('div');el.className='major';el.id='major';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Major update '+p.v);
   let coins='';
+  el.dataset.theme=p.anim||'';
+  if(p.anim==='ascension') for(let k=0;k<20;k++) coins+='<i class="pl" style="left:'+(rand()*100).toFixed(1)+'%;width:'+(8+rand()*10).toFixed(0)+'px;height:'+(8+rand()*10).toFixed(0)+'px;animation-duration:'+(5+rand()*5).toFixed(1)+'s;animation-delay:-'+(rand()*9).toFixed(1)+'s"></i>';
   if(p.anim==='treasure') for(let k=0;k<22;k++) coins+='<i class="coin" style="left:'+(rand()*100).toFixed(1)+'%;animation-duration:'+(4+rand()*4).toFixed(1)+'s;animation-delay:-'+(rand()*8).toFixed(1)+'s"></i>';
   const art=MJ_ART[p.anim]?MJ_ART[p.anim]():'<svg class="mjstar" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3l4.9 10.9 11.9 1.3-8.9 8 2.5 11.7L20 28.8 9.6 34.9l2.5-11.7-8.9-8 11.9-1.3z" fill="#f2c14e"/></svg>';
   el.innerHTML='<div class="rays"></div>'+coins+art+'<div class="mjb">Major update</div><div class="mjv"></div><div class="mjt"></div><ul></ul><button class="go">Dive in</button>';
@@ -1245,9 +1278,14 @@ function maxAfford(i){
 const buyCount=i=>S.mode==='max'?maxAfford(i):+S.mode;
 // plankton per pearl-squared grows with every ascension, sized so a run that reaches ~25 of the tier's last reef earns about that ascension's pearl requirement
 const PEARL_DEPTH=25,PEARL_DEPTH_LATE=75;
-const pearlK=()=>{const a=Math.min(S.ascensions,MAXASC-1);return Math.max(10000,G[7+5*a].base*(Math.pow(GROWTH,a>=3?PEARL_DEPTH_LATE:PEARL_DEPTH)-1)/(GROWTH-1)/Math.pow(RANK[a].req,2));};
-const pearlMult=()=>(1+.1*lvl('luster'))*(1+.04*slvl('polish'))*(1+.06*clvl('cfacet'));
-const pearlGain=()=>Math.floor(Math.sqrt(S.runTotal/pearlK())*pearlMult());
+// plankton per pearl was tuned to the original requirements, so raising the requirements makes ascending harder
+const REQ0=[300,1500,5000,18000,60000,180000,550000,1.8e6,5e6,1.5e7];
+const pearlK=()=>{const a=Math.min(S.ascensions,MAXASC-1);return Math.max(10000,G[7+5*a].base*(Math.pow(GROWTH,a>=3?PEARL_DEPTH_LATE:PEARL_DEPTH)-1)/(GROWTH-1)/Math.pow(REQ0[a],2));};
+const PEARL_CAP_BASE=.15;
+const pearlCapPct=()=>PEARL_CAP_BASE+.01*(lvl('luster')+slvl('polish')+clvl('cfacet'));
+const pearlCap=()=>Math.max(1,Math.floor(RANK[Math.min(S.ascensions,MAXASC-1)].req*pearlCapPct()));
+const pearlRaw=()=>Math.floor(Math.sqrt(S.runTotal/pearlK()));
+const pearlGain=()=>Math.min(pearlRaw(),pearlCap());
 function ascGain(){
   if(S.ascensions>=MAXASC) return 0;
   return S.pearlsEarned>=RANK[S.ascensions].req?1:0;
@@ -1309,6 +1347,7 @@ function updRot(){
     ROT.keys=sig;ROT.rows={};
     el.innerHTML='<div class="hh"><div><div class="ht" style="color:var(--ink)">Tide market</div><div class="meta">5 skins, restocked every 10 minutes. At most one legendary.</div></div><div class="sleft" id="rot-left"></div></div>';
     ROT.left=$('#rot-left');
+    const strip=document.createElement('div');strip.className='hstrip';el.appendChild(strip);
     keys.slice().sort((a,b)=>RARS.indexOf(rarOf(a))-RARS.indexOf(rarOf(b))).forEach(key=>{
       const p=key.split(':'),row=document.createElement('div');
       row.className='hrow rb rar-'+rarOf(key);
@@ -1317,7 +1356,7 @@ function updRot(){
       row.querySelector('.hm').textContent=RN[rarOf(key)]+' '+({water:'water',reef:'reef colors',ripple:'tap effect',pet:'companion'})[p[0]]+(SHOPNEW[key]?'':', Season 1 reward');
       const sw=SKR[key].b.querySelector('.sw'),dst=row.querySelector('.sw');dst.style.background=sw.style.background;dst.innerHTML=sw.innerHTML;
       const btn=row.querySelector('.buy');btn.addEventListener('click',()=>buyRot(key,btn));
-      el.appendChild(row);
+      strip.appendChild(row);
       ROT.rows[key]={btn,l1:btn.querySelector('.l1'),l2:btn.querySelector('.l2')};
     });
   }
@@ -1726,6 +1765,7 @@ const HR={};
 (function(){
   const el=$('#hal');
   el.innerHTML='<div class="hh"><div><div class="ht">Halloween shop</div><div class="meta">Exotic skins for shells. Gone on November 1.</div></div><div class="sleft" id="hal-left"></div></div>';
+  const hstrip=document.createElement('div');hstrip.className='hstrip';el.appendChild(hstrip);
   for(const key in HAL.items){
     const p=key.split(':'),row=document.createElement('div');
     row.className='hrow rb rar-event';
@@ -1735,7 +1775,7 @@ const HR={};
     const sw=SKR[key].b.querySelector('.sw'),dst=row.querySelector('.sw');dst.style.background=sw.style.background;dst.innerHTML=sw.innerHTML;
     const btn=row.querySelector('.buy');
     btn.addEventListener('click',()=>buyHal(key,btn));
-    el.appendChild(row);
+    hstrip.appendChild(row);
     if(key===HAL_SECRET){row.hidden=true;row.querySelector('.hn').textContent=CAT.theme.items.haunted+' (secret)';}
     HR[key]={row,btn,l1:btn.querySelector('.l1'),l2:btn.querySelector('.l2')};
   }
@@ -2199,17 +2239,17 @@ function updUpgrades(kind){
 function updSpawn(gain,mg){
   segBtnsSub('spawn');
   if(sub.spawn==='spawn'){
-    const m=pearlMult();
+    const cap=pearlCap(),capped=pearlRaw()>=cap;
     setText(SP.pearls,fmt(S.pearls)+(S.pearls===1?' pearl':' pearls'));
     setText(SP.bonus,'+'+fmt(5*S.pearlsEarned)+'% production from '+fmt(S.pearlsEarned)+' earned');
-    const PK=pearlK(),lower=PK*Math.pow(gain/m,2),upper=PK*Math.pow((gain+1)/m,2);
-    SP.bar.style.width=Math.max(0,Math.min(100,(S.runTotal-lower)/(upper-lower)*100))+'%';
-    setText(SP.next,'Next pearl at '+fmt(upper)+' plankton gathered this run. You are at '+fmt(S.runTotal)+'.');
+    const PK=pearlK(),lower=PK*Math.pow(gain,2),upper=PK*Math.pow(gain+1,2);
+    SP.bar.style.width=capped?'100%':Math.max(0,Math.min(100,(S.runTotal-lower)/(upper-lower)*100))+'%';
+    setText(SP.next,capped?'This spawn is at its limit of '+fmt(cap)+' pearls. Pearl upgrades raise the limit.':'Next pearl at '+fmt(upper)+' plankton gathered this run. You are at '+fmt(S.runTotal)+'.');
     SP.btn.setAttribute('aria-disabled',String(gain<1));
     SP.btn.classList.toggle('armed',spawnArmed&&gain>=1);
     setText(SP.btn,gain<1?'Spawn':(spawnArmed?'Tap again to spawn':'Spawn for '+fmt(gain)+(gain===1?' pearl':' pearls')));
     setText(SP.after,gain<1?'Gather '+fmt(PK)+' plankton in one run to earn your first pearl.':
-      'Pearl bonus goes from +'+fmt(5*S.pearlsEarned)+'% to +'+fmt(5*(S.pearlsEarned+gain))+'%.');
+      'Pearl bonus goes from +'+fmt(5*S.pearlsEarned)+'% to +'+fmt(5*(S.pearlsEarned+gain))+'%. A spawn pays at most '+fmt(cap)+' pearls ('+Math.round(pearlCapPct()*100)+'% of what you need to ascend).');
     updUpgrades('perma');
   }else{
     const A=S.ascensions,fin=A>=MAXASC,r=fin?null:RANK[A],pe=S.pearlsEarned;
@@ -2379,8 +2419,8 @@ function updSkins(){
   for(const key in SKR){
     const o=SKR[key],p=key.split(':'),owned=!!S.skins[key],on=S.equip[p[0]]===p[1],k=skinKind(key);
     tot++;if(owned) own++;
-    const vis=owned||k==='milestone'||showHiddenSkins;
-    if(!owned&&k!=='milestone') hid++;
+    const vis=owned||showHiddenSkins;
+    if(!owned) hid++;
     o.b.hidden=!vis;
     if(vis) seen[p[0]]=1;
     o.b.classList.toggle('on',on);o.b.classList.toggle('lock',!owned);
@@ -2396,7 +2436,7 @@ function updSkins(){
   setText($('#sk-count'),own+' of '+tot+' skins owned');
   setText($('#sk-hid'),showHiddenSkins?'Hide hidden skins':'Show hidden skins');
   $('#sk-hid').hidden=hid===0;
-  setText($('#sk-note'),showHiddenSkins?'Showing shop, season, event and treasure skins you do not own yet.':'Unowned trophy skins show here. '+(hid?hid+' shop, season, event and treasure skins are hidden.':''));
+  setText($('#sk-note'),showHiddenSkins?'Showing every skin you do not own yet.':(hid?hid+' skins you do not own yet are hidden.':''));
 }
 (function(){
   const inp=$('#code-in'),msg=$('#code-msg');
