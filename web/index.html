@@ -463,6 +463,20 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 .major .mjpearl .core{transform-box:fill-box;transform-origin:center;animation:mjbob 2.4s ease-in-out infinite}
 @keyframes mjpulse{0%{transform:scale(.45);opacity:.9}100%{transform:scale(1.7);opacity:0}}
 @media (prefers-reduced-motion:reduce){.major .pl{display:none}}
+/* lasting splash */
+.major[data-theme="lasting"]{background:radial-gradient(circle at 50% 28%,#14566b 0%,#071e2b 74%);color:#e6fbff}
+.major[data-theme="lasting"] .rays{background:repeating-conic-gradient(rgba(127,224,232,.08) 0 8deg,transparent 8deg 22deg)}
+.major[data-theme="lasting"] .mjb{color:#06303d;background:linear-gradient(100deg,#7fe0e8,#fff,#7fe0e8) 0 0/200% 100%;animation:mjsh 2.4s linear infinite}
+.major[data-theme="lasting"] .mjv{text-shadow:0 0 24px rgba(127,224,232,.6)}
+.major[data-theme="lasting"] li{color:#c4eef2}
+.major[data-theme="lasting"] li:before{background:#7fe0e8}
+.major[data-theme="lasting"] .go{background:linear-gradient(135deg,#e6fbff,#7fe0e8 55%,#9bb7ff);color:#06303d}
+.major .sh{position:absolute;bottom:-30px;clip-path:polygon(50% 0,100% 38%,50% 100%,0 38%);background:linear-gradient(135deg,#e6fbff,#7fe0e8 60%,#9bb7ff);opacity:.8;animation:mjrise linear infinite}
+.major .mjgem{width:170px;height:170px;overflow:visible}
+.major .mjgem .r{fill:none;stroke:#7fe0e8;transform-box:fill-box;transform-origin:center;animation:mjpulse 3s ease-out infinite}
+.major .mjgem .r:nth-child(3){animation-delay:1.5s}
+.major .mjgem .core{transform-box:fill-box;transform-origin:center;animation:mjbob 2.4s ease-in-out infinite;filter:drop-shadow(0 0 14px rgba(127,224,232,.7))}
+@media (prefers-reduced-motion:reduce){.major .sh{display:none}}
 /* unique rank animations */
 .prow[data-rk="2"]::before{background:radial-gradient(circle,hsla(var(--h),90%,78%,.55) 0 2px,transparent 3px) 0 0/34px 44px,radial-gradient(circle,hsla(var(--h),90%,78%,.4) 0 1.6px,transparent 2.6px) 17px 22px/34px 44px;animation:rkrise 5s linear infinite}
 .rankcard[data-rk="2"]::before{background:radial-gradient(circle,hsla(var(--h),90%,78%,.55) 0 2px,transparent 3px) 0 0/34px 44px,radial-gradient(circle,hsla(var(--h),90%,78%,.4) 0 1.6px,transparent 2.6px) 17px 22px/34px 44px;animation:rkrise 5s linear infinite}
@@ -597,7 +611,7 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 const $=s=>document.querySelector(s);
 const KEY='tidepool-save-v1';
 /* ---- release settings: bump GAME_VERSION and version.json together on every release ---- */
-const GAME_VERSION='1.6.15';
+const GAME_VERSION='1.6.16';
 const UPDATE_URL='https://zhandermusic.github.io/tidepool/version.json';   // live version.json that desktop builds check for updates
 const STORE_URL='https://github.com/ZhanderMusic/tidepool/releases/latest';    // where installed (desktop) builds send players for updates
 const TAU=6.2832,rand=Math.random;
@@ -752,16 +766,16 @@ const RLORE=[
 ];
 const RHUE=[200,165,185,225,250,275,300,210,45,40];
 const RANK=[
-  {name:'Tidewatcher',mult:2,req:450},
-  {name:'Reefkeeper',mult:3,req:2250},
-  {name:'Deepcaller',mult:4,req:7500},
-  {name:'Stormwarden',mult:6,req:27000},
-  {name:'Moonwright',mult:10,req:90000},
-  {name:'Starcurrent',mult:16,req:270000},
-  {name:'Dreamtide',mult:30,req:825000},
-  {name:'Silverwake',mult:60,req:2.7e6},
-  {name:'Oceanheart',mult:150,req:7.5e6},
-  {name:'Tide Sovereign',mult:500,req:2.25e7}
+  {name:'Tidewatcher',mult:2,req:600},
+  {name:'Reefkeeper',mult:3,req:3000},
+  {name:'Deepcaller',mult:4,req:10000},
+  {name:'Stormwarden',mult:6,req:36000},
+  {name:'Moonwright',mult:10,req:120000},
+  {name:'Starcurrent',mult:16,req:360000},
+  {name:'Dreamtide',mult:30,req:1.1e6},
+  {name:'Silverwake',mult:60,req:3.6e6},
+  {name:'Oceanheart',mult:150,req:1e7},
+  {name:'Tide Sovereign',mult:500,req:3e7}
 ];
 // every ascension unlocks 5 deeper reefs (and 3 tides, below)
 const EXT_NAMES=[
@@ -970,7 +984,7 @@ const SK_TIER={2:'water:dusk',4:'ripple:bubbles',5:'reef:pastel',6:'pet:jelly',8
 const MOON_TIER={25:1,30:1,40:3,55:1,75:2,90:2};
 const TIERS=100;
 const UPG_XP=1;
-const SEASON={n:1,name:'Brinelight',end:new Date(2026,10,21,23,59,59).getTime(),
+const SEASON={n:1,name:'Brinelight',end:new Date(2026,10,1,0,0,0).getTime(),
   story:{title:'Where the Brinelight comes from',paras:[
     'Every autumn, when the tide pulls back farther than on any other night, something pale wakes in the deepest water of the pool. The old tide-watchers called it the Brinelight.',
     'It is not a star, and it is not a lantern. It is the sea remembering every creature that ever drifted down into the dark, and calling them back up. Polyps lean toward it. Whales change their song for it. Even the sand glows.',
@@ -1064,6 +1078,7 @@ function skinSrc(key){
 }
 
 const PATCH=[
+ {v:'1.6.16',major:1,anim:'lasting',t:'Lasting reefs and bigger ascensions',l:['Season 1: Brinelight now ends on November 1.','Every ascension now needs double its original pearls, instead of 50% more.','Tide crystals can now buy a Lasting reefs upgrade for each group of reefs: Base, then Ascension 1, 2 and so on. Reefs in an upgraded group are kept when you spawn and when you ascend.','A matching Lasting tides upgrade for each group keeps the tide upgrades you bought in that group.','An upgrade shows once you have unlocked that group, and it needs ascension 3 for crystals.']},
  {v:'1.6.15',major:1,anim:'ascension',t:'A new ascension system',l:['A spawn can now pay at most 15% of the pearls you need to ascend. Pearl luster, Pearl polish and Pearl facets each add 1% to that limit per level, up to 50% with all 35 levels.','Every ascension needs 50% more pearls than before.','The Spawn tab shows how many pearls a spawn can pay at most, and tells you when you have reached it.','Pearls and pearl bonuses you already have are kept.','Skins you do not own yet are now all in the hidden list, including trophy and ascension skins.','The Shop skins, the Halloween shop and the chests are now square cards. The skin rows scroll sideways.']},
  {v:'1.6.14',t:'Pearls cost more from ascension 3',l:['From ascension 3 on, pearls need about 75 of that tier\'s last reef instead of 25, so an ascension takes several spawns.','Pearls and pearl bonuses you already have are kept. Only new spawns use the new cost.']},
  {v:'1.6.13',t:'A tidier reef and a prettier Track',l:['The reef scene is arranged in three depth rows, and each reef type keeps its own stretch of the floor, so it no longer piles up.','Pass Track rewards show icons instead of text, and skin rewards show a preview of the skin.']},
@@ -1153,6 +1168,7 @@ function trApply(kind){
 }
 const MJ_ART={
   ascension:()=>'<div class="mjc"><svg class="mjpearl" viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="mjpg" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#e3dcfb"/><stop offset="1" stop-color="#a99bea"/></radialGradient></defs><circle class="r" cx="60" cy="60" r="40" stroke-width="3"/><circle class="r" cx="60" cy="60" r="40" stroke-width="3"/><circle class="r" cx="60" cy="60" r="40" stroke-width="3"/><circle class="core" cx="60" cy="60" r="17" fill="url(#mjpg)"/></svg></div>',
+  lasting:()=>'<div class="mjc"><svg class="mjgem" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="mjgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6fbff"/><stop offset=".55" stop-color="#7fe0e8"/><stop offset="1" stop-color="#9bb7ff"/></linearGradient></defs><circle class="r" cx="60" cy="62" r="42" stroke-width="3"/><circle class="r" cx="60" cy="62" r="42" stroke-width="3"/><g class="core"><path d="M60 14L92 46 60 108 28 46Z" fill="url(#mjgg)"/><path d="M28 46H92M60 14L45 46 60 108 75 46Z" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2.5" stroke-linejoin="round"/></g></svg></div>',
   treasure:()=>'<div class="mjc">'+CHEST_SVG+CHEST_SVG+CHEST_SVG+'</div>'
 };
 function showMajor(p){
@@ -1161,6 +1177,7 @@ function showMajor(p){
   let coins='';
   el.dataset.theme=p.anim||'';
   if(p.anim==='ascension') for(let k=0;k<20;k++) coins+='<i class="pl" style="left:'+(rand()*100).toFixed(1)+'%;width:'+(8+rand()*10).toFixed(0)+'px;height:'+(8+rand()*10).toFixed(0)+'px;animation-duration:'+(5+rand()*5).toFixed(1)+'s;animation-delay:-'+(rand()*9).toFixed(1)+'s"></i>';
+  if(p.anim==='lasting') for(let k=0;k<20;k++) coins+='<i class="sh" style="left:'+(rand()*100).toFixed(1)+'%;width:'+(8+rand()*9).toFixed(0)+'px;height:'+(12+rand()*12).toFixed(0)+'px;animation-duration:'+(5+rand()*5).toFixed(1)+'s;animation-delay:-'+(rand()*9).toFixed(1)+'s"></i>';
   if(p.anim==='treasure') for(let k=0;k<22;k++) coins+='<i class="coin" style="left:'+(rand()*100).toFixed(1)+'%;animation-duration:'+(4+rand()*4).toFixed(1)+'s;animation-delay:-'+(rand()*8).toFixed(1)+'s"></i>';
   const art=MJ_ART[p.anim]?MJ_ART[p.anim]():'<svg class="mjstar" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3l4.9 10.9 11.9 1.3-8.9 8 2.5 11.7L20 28.8 9.6 34.9l2.5-11.7-8.9-8 11.9-1.3z" fill="#f2c14e"/></svg>';
   el.innerHTML='<div class="rays"></div>'+coins+art+'<div class="mjb">Major update</div><div class="mjv"></div><div class="mjt"></div><ul></ul><button class="go">Dive in</button>';
@@ -1207,7 +1224,7 @@ const defSkins=()=>({'water:day':1,'reef:natural':1,'ripple:ring':1,'pet:none':1
 const fresh=()=>({v:2,plankton:0,runTotal:0,lifeTotal:0,owned:G.map(()=>0),runUp:{},pearls:0,pearlsEarned:0,pearlsAll:0,perma:{},
   spawns:0,clicks:0,mode:'1',bubbleIn:40,buffs:{frenzy:0,surge:0},played:0,bestRun:0,last:Date.now(),
   shells:2,moonGone:1,ascensions:0,shellUp:{},xp:0,claimed:{},ovClaimed:0,
-  skins:defSkins(),equip:Object.assign({},DEFSK),missions:[],mseq:0,blooms:0,missionsDone:0,bestPs:0,ach:{},dailyAt:0,congrats:0,shopRoll:null,codes:{},crystals:0,crystalUp:{},doubloons:5,pity:0,trMult:0,xpBoostUntil:0,vouchers:0,seenMajor:''});
+  skins:defSkins(),equip:Object.assign({},DEFSK),missions:[],mseq:0,blooms:0,missionsDone:0,bestPs:0,ach:{},dailyAt:0,congrats:0,shopRoll:null,codes:{},crystals:0,crystalUp:{},keep:{},keepT:{},doubloons:5,pity:0,trMult:0,xpBoostUntil:0,vouchers:0,seenMajor:''});
 let S=fresh();
 let achN=0;
 function load(src){
@@ -1217,7 +1234,7 @@ function load(src){
     S=Object.assign(fresh(),o);
     S.owned=G.map((_,i)=>Number(o.owned&&o.owned[i])||0);
     S.buffs=Object.assign({frenzy:0,surge:0},o.buffs||{});
-    ['runUp','perma','shellUp','claimed','ach','codes','crystalUp'].forEach(k=>{if(!S[k]||typeof S[k]!=='object') S[k]={};});
+    ['runUp','perma','shellUp','claimed','ach','codes','crystalUp','keep','keepT'].forEach(k=>{if(!S[k]||typeof S[k]!=='object') S[k]={};});
     if(!o.moonGone){S.shells+=Math.floor(Number(o.moonEarned)||0)*3;S.moonGone=1;}
     S.skins=Object.assign(defSkins(),o.skins||{});
     for(const a of ACH) if(S.ach[a.id]&&a.rw.skin) S.skins[a.rw.skin]=1;
@@ -1248,6 +1265,14 @@ const lvl=id=>S.perma[id]||0;
 const slvl=id=>S.shellUp[id]||0;
 const clvl=id=>S.crystalUp[id]||0;
 const crysOn=()=>S.ascensions>=3;
+const keepCost=a=>Math.round(400*Math.pow(2,a));
+const keepName=(a,tide)=>(a===0?'Base ':'Ascension '+a+' ')+(tide?'tides':'reefs');
+function buyKeep(a,tide){
+  const m=tide?S.keepT:S.keep;
+  if(!crysOn()||a>S.ascensions||m[a]||S.crystals<keepCost(a)) return;
+  S.crystals-=keepCost(a);m[a]=1;
+  updateUI();save();
+}
 const crysRate=()=>crysOn()?(S.ascensions-2)*.03*(1+.15*clvl('cbloom')):0;
 const crysLump=()=>Math.round(120*(S.ascensions-2)*(1+.25*clvl('cecho')));
 const costMult=()=>Math.pow(.97,lvl('cheap'));
@@ -1526,6 +1551,12 @@ $('#p-spawn').innerHTML=
     <h2>Tide crystals</h2>
     <div class="meta crysnote" id="crys-note"></div>
     <div id="crysl"></div>
+    <h3 id="keep-h" hidden>Lasting reefs</h3>
+    <p class="note" id="keep-n" hidden>One upgrade per group of reefs. Reefs in an upgraded group are kept when you spawn and when you ascend.</p>
+    <div id="keepl" hidden></div>
+    <h3 id="keept-h" hidden>Lasting tides</h3>
+    <p class="note" id="keept-n" hidden>One upgrade per group of tide upgrades. Tide upgrades you bought in an upgraded group are kept when you spawn and when you ascend.</p>
+    <div id="keeptl" hidden></div>
     <h2>Ascension path</h2>
     <p class="note">Tap a rank to read its story.</p>
     <div id="apath"></div>
@@ -1635,6 +1666,36 @@ for(const kind in UPK){
   });
 }
 
+const KEEP={},KEEPT={};
+function buildKeep(map,elId,tide){
+  const el=$(elId);
+  for(let a=0;a<=MAXASC;a++){
+    const row=document.createElement('div');row.className='row noglyph';
+    row.innerHTML='<div class="info"><div class="name"></div><div class="meta d"></div></div><button class="buy crys"><span class="l1">Keep</span><span class="l2"></span></button>';
+    row.querySelector('.name').textContent=keepName(a,tide);
+    const btn=row.querySelector('.buy');btn.dataset.keep=a;if(tide) btn.dataset.tide='1';
+    el.appendChild(row);
+    map[a]={row,btn,d:row.querySelector('.d'),l1:row.querySelector('.l1'),l2:row.querySelector('.l2')};
+  }
+}
+buildKeep(KEEP,'#keepl',false);buildKeep(KEEPT,'#keeptl',true);
+function updKeepSet(map,own,tide,ids){
+  const on=crysOn();
+  ids.forEach(id=>{$('#'+id).hidden=!on;});
+  if(!on) return;
+  for(let a=0;a<=MAXASC;a++){
+    const o=map[a],un=a<=S.ascensions,has=!!own[a];
+    o.row.hidden=!un;if(!un) continue;
+    const n=tide?UPS.filter(u=>(u.asc||0)===a).length:G.reduce((t,_,i)=>t+(genAsc(i)===a?1:0),0);
+    setText(o.d,has?'Active. These '+(tide?'tide upgrades':'reefs')+' are never cleared.':'Keeps all '+n+(tide?' tide upgrades':' reef types')+' in this group through spawns and ascensions.');
+    setText(o.l1,has?'Active':'Keep');setText(o.l2,has?'—':fmt(keepCost(a))+' crystals');
+    o.btn.classList.toggle('can',!has&&S.crystals>=keepCost(a));
+  }
+}
+function updKeep(){
+  updKeepSet(KEEP,S.keep,false,['keep-h','keep-n','keepl']);
+  updKeepSet(KEEPT,S.keepT,true,['keept-h','keept-n','keeptl']);
+}
 const ARW=[];
 RANK.forEach((r,a)=>{
   const row=document.createElement('div');row.className='row trow prow';row.dataset.rk=a+1;row.style.setProperty('--h',RHUE[a]);
@@ -1881,8 +1942,10 @@ function equipSkin(key){
   updateUI();save();
 }
 function resetRun(){
-  S.owned=G.map(()=>0);S.runUp={};S.runTotal=0;S.plankton=seedAmount(lvl('seed'));
-  const c=colony(lvl('colony'));S.owned[0]=c[0];S.owned[1]=c[1];
+  const kept=S.owned.slice(),keptU=S.runUp;
+  S.owned=G.map((_,i)=>S.keep[genAsc(i)]?(kept[i]||0):0);S.runUp={};
+  for(const u of UPS) if(keptU[u.id]&&S.keepT[u.asc||0]) S.runUp[u.id]=true;S.runTotal=0;S.plankton=seedAmount(lvl('seed'));
+  const c=colony(lvl('colony'));S.owned[0]=Math.max(S.owned[0],c[0]);S.owned[1]=Math.max(S.owned[1],c[1]);
   S.buffs.frenzy=0;S.buffs.surge=0;hideBloom();S.bubbleIn=nextBubbleDelay();
 }
 let spawnArmed=false,spawnT;
@@ -1968,6 +2031,7 @@ document.addEventListener('click',e=>{
   else if(d.gtier!==undefined){gTier=d.gtier==='all'?'all':+d.gtier;updateUI();}
   else if(d.utier!==undefined){uTier=d.utier==='all'?'all':+d.utier;updateUI();}
   else if(d.skin) equipSkin(d.skin);
+  else if(d.keep!==undefined) buyKeep(+d.keep,!!d.tide);
   else if(d.chest!==undefined) pickChest(+d.chest);
   else if(d.again!==undefined) trAgain();
   else if(d.vch) useVoucher(d.vch);
@@ -2262,6 +2326,7 @@ function updSpawn(gain,mg){
     $('#crysl').hidden=!on;
     setText($('#crys-note'),on?'You gather '+fmt(crysRate())+' per second. Ascending gives '+fmt(crysLump())+' more. Crystals and these upgrades are never reset.':'Finish ascension 3 to start gathering Tide crystals. They last through every ascension.');
     if(on) updUpgrades('crys');
+    updKeep();
     setText(AS.bonus,'Production ×'+fmt(rankMult())+' from ranks');
     setText(AS.rank,A>0?'Rank: '+rankName()+', ascension '+A+' of '+MAXASC:'Rank: none yet');
     AS.btn.setAttribute('aria-disabled',String(mg<1));
