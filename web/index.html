@@ -475,7 +475,7 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 const $=s=>document.querySelector(s);
 const KEY='tidepool-save-v1';
 /* ---- release settings: bump GAME_VERSION and version.json together on every release ---- */
-const GAME_VERSION='1.6.8';
+const GAME_VERSION='1.6.9';
 const UPDATE_URL='https://zhandermusic.github.io/tidepool/version.json';   // live version.json that desktop builds check for updates
 const STORE_URL='https://github.com/ZhanderMusic/tidepool/releases/latest';    // where installed (desktop) builds send players for updates
 const TAU=6.2832,rand=Math.random;
@@ -1021,9 +1021,10 @@ function maxAfford(i){
   return Math.max(n,0);
 }
 const buyCount=i=>S.mode==='max'?maxAfford(i):+S.mode;
-const PEARL_K=10000;
+// plankton per pearl-squared grows with every ascension, sized so a run that reaches ~10 of the tier's last reef earns about that ascension's pearl requirement
+const pearlK=()=>{const a=Math.min(S.ascensions,MAXASC-1);return Math.max(10000,20.3*G[7+5*a].base/Math.pow(RANK[a].req,2));};
 const pearlMult=()=>(1+.1*lvl('luster'))*(1+.04*slvl('polish'))*(1+.06*clvl('cfacet'));
-const pearlGain=()=>Math.floor(Math.sqrt(S.runTotal/PEARL_K)*pearlMult());
+const pearlGain=()=>Math.floor(Math.sqrt(S.runTotal/pearlK())*pearlMult());
 function ascGain(){
   if(S.ascensions>=MAXASC) return 0;
   return S.pearlsEarned>=RANK[S.ascensions].req?1:0;
@@ -1276,7 +1277,7 @@ $('#p-pass').innerHTML=
      <button class="daily can" id="mclaimall" data-mclaimall="1" hidden>Claim all</button>
      <div id="mis"></div>
      <button class="daily" id="daily" data-daily="1">Daily catch</button>
-     <p class="note">Finish missions for shells and pass XP. Every upgrade you buy also gives ${UPG_XP} XP. Spend shells in the Shop tab.</p>
+     <p class="note">Finish missions for shells and pass XP. Every tide and upgrade you buy gives ${UPG_XP} XP, and every reef gives 0.25 XP. Spend shells in the Shop tab.</p>
    </div>
    <div data-view="track" hidden>
      <button class="daily can" id="claimall" data-claimall="1" hidden>Claim all</button>
@@ -1554,7 +1555,7 @@ function setSub(pk,name){
 function buyGen(i){
   const n=buyCount(i); if(n<1) return;
   const c=bulkCost(i,n); if(S.plankton<c) return;
-  S.plankton-=c;S.owned[i]+=n;mev('buy',n);updateUI();
+  S.plankton-=c;S.owned[i]+=n;mev('buy',n);addXp(.25*n,true);updateUI();
 }
 function buyUp(id){
   const u=UR[id].u; if(S.runUp[id]||S.plankton<u.cost) return;
@@ -1909,13 +1910,13 @@ function updSpawn(gain,mg){
     const m=pearlMult();
     setText(SP.pearls,fmt(S.pearls)+(S.pearls===1?' pearl':' pearls'));
     setText(SP.bonus,'+'+fmt(5*S.pearlsEarned)+'% production from '+fmt(S.pearlsEarned)+' earned');
-    const lower=PEARL_K*Math.pow(gain/m,2),upper=PEARL_K*Math.pow((gain+1)/m,2);
+    const PK=pearlK(),lower=PK*Math.pow(gain/m,2),upper=PK*Math.pow((gain+1)/m,2);
     SP.bar.style.width=Math.max(0,Math.min(100,(S.runTotal-lower)/(upper-lower)*100))+'%';
     setText(SP.next,'Next pearl at '+fmt(upper)+' plankton gathered this run. You are at '+fmt(S.runTotal)+'.');
     SP.btn.setAttribute('aria-disabled',String(gain<1));
     SP.btn.classList.toggle('armed',spawnArmed&&gain>=1);
     setText(SP.btn,gain<1?'Spawn':(spawnArmed?'Tap again to spawn':'Spawn for '+fmt(gain)+(gain===1?' pearl':' pearls')));
-    setText(SP.after,gain<1?'Gather '+fmt(PEARL_K)+' plankton in one run to earn your first pearl.':
+    setText(SP.after,gain<1?'Gather '+fmt(PK)+' plankton in one run to earn your first pearl.':
       'Pearl bonus goes from +'+fmt(5*S.pearlsEarned)+'% to +'+fmt(5*(S.pearlsEarned+gain))+'%.');
     updUpgrades('perma');
   }else{
