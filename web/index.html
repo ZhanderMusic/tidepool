@@ -354,6 +354,7 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 :root[data-apptheme="stormcell"][data-apptheme]{--bg:#0f1a35;--ink:#e4ecff;--ink2:#8fa4d6;--coral:#ffd34d;--coral-ink:#2a2105;--bgfx:linear-gradient(135deg,#0f1a35,#1d2f66 40%,#121c3b 65%,#2a3f85)}
 :root[data-apptheme="starlit"][data-apptheme]{--bg:#190f36;--ink:#efe6ff;--ink2:#a994d8;--coral:#ff8fd8;--coral-ink:#2f0a28;--bgfx:linear-gradient(135deg,#190f36,#33196b 40%,#1b1040 65%,#4a2399)}
 :root[data-apptheme="silvermirror"][data-apptheme]{--bg:#1b1f24;--ink:#eef1f4;--ink2:#9aa4ad;--coral:#cfe3f2;--coral-ink:#11202b;--bgfx:linear-gradient(135deg,#1b1f24,#3a424b 40%,#1f242a 65%,#4d5762)}
+:root[data-apptheme="haunted"][data-apptheme]{--bg:#1a0b2e;--ink:#ffe9d0;--ink2:#c9a0e6;--coral:#ff8a1f;--coral-ink:#2a1200;--bgfx:linear-gradient(135deg,#1a0b2e,#3f1c6b 38%,#1f0d36 62%,#6b2a0c)}
 :root[data-apptheme="sovgold"][data-apptheme]{--bg:#1a1204;--ink:#fff0c8;--ink2:#c9a85c;--coral:#f4c95d;--coral-ink:#2a1b02;--bgfx:linear-gradient(135deg,#1a1204,#4a3208 40%,#201505 65%,#6b4a0c)}
 /* unique rank animations */
 .prow[data-rk="2"]::before{background:radial-gradient(circle,hsla(var(--h),90%,78%,.55) 0 2px,transparent 3px) 0 0/34px 44px,radial-gradient(circle,hsla(var(--h),90%,78%,.4) 0 1.6px,transparent 2.6px) 17px 22px/34px 44px;animation:rkrise 5s linear infinite}
@@ -394,6 +395,18 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 @keyframes rkspin{to{transform:rotate(360deg)}}
 .prow[data-rk]::before,.prow[data-rk]::after,.rankcard[data-rk]::before,.rankcard[data-rk]::after{animation-play-state:running}
 @media (prefers-reduced-motion:reduce){.prow[data-rk]::before,.prow[data-rk]::after,.rankcard[data-rk]::before,.rankcard[data-rk]::after{animation:none!important}.rankcard::before,.rankcard::after,.prow::before,.prow::after,:root[data-apptheme] body{animation:none}}
+/* 1.6.6 horizontal track */
+#tiers{display:flex;flex-direction:row;gap:10px;overflow-x:auto;overflow-y:hidden;padding:8px 2px 14px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+#tiers .trow{flex:0 0 124px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:14px 8px 12px;border:1.5px solid var(--line);border-radius:18px;scroll-snap-align:start}
+#tiers .trow .info{width:100%}
+#tiers .trow .name{font-size:14.5px;line-height:1.2}
+#tiers .trow .meta{font-size:12px;margin-top:3px}
+#tiers .trow .buy{width:100%;min-width:0}
+#tiers .trow.now{box-shadow:inset 0 3px 0 var(--coral);padding-left:8px}
+#tiers .trow.big{flex-basis:140px;border-color:transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,#f6b99b,#ffd36a,#fff0e6,#f6b99b) border-box;box-shadow:0 0 14px rgba(246,185,155,.45)}
+#tiers .trow.big .tb{width:54px;height:54px;font-size:19px}
+#tiers .trow.big .name{font-size:17px;font-weight:800}
+#tiers .trow.big.got{opacity:.7}
 </style>
 </head>
 <body>
@@ -462,7 +475,7 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 const $=s=>document.querySelector(s);
 const KEY='tidepool-save-v1';
 /* ---- release settings: bump GAME_VERSION and version.json together on every release ---- */
-const GAME_VERSION='1.6.5';
+const GAME_VERSION='1.6.7';
 const UPDATE_URL='https://zhandermusic.github.io/tidepool/version.json';   // live version.json that desktop builds check for updates
 const STORE_URL='https://github.com/ZhanderMusic/tidepool/releases/latest';    // where installed (desktop) builds send players for updates
 const TAU=6.2832,rand=Math.random;
@@ -756,10 +769,10 @@ const CAT={
   reef:{title:'Reef colors',def:'natural',items:{natural:'Natural',pastel:'Pastel',neon:'Neon',ember:'Ember',frost:'Frost',gilded:'Gilded',shadow:'Shadow',spotted:'Polka',striped:'Stripes',bioglow:'Bioglow',prism:'Prismatic',pumpkin:"Jack-o'-lantern",sunset:'Sunset',berry:'Berry dots',glass:'Aurora glass'}},
   ripple:{title:'Tap effect',def:'ring',items:{ring:'Rings',bubbles:'Bubbles',sparkle:'Sparks',stars:'Stars',embers:'Embers',petals:'Petals',tidal:'Tidal burst',spirits:'Spooky spirits',drops:'Raindrops',confetti:'Confetti',prism:'Prism burst'}},
   pet:{title:'Companion',def:'none',items:{none:'None',jelly:'Jellyfish',turtle:'Turtle',manta:'Manta ray',whale:'Whale',sovereign:'Leviathan spirit',phantom:'Lantern phantom',fish:'Little fish',seahorse:'Seahorse',angler:'Lantern angler'}},
-  theme:{title:'App theme',def:'none',items:{none:'Default',reefglow:'Reefglow',stormcell:'Stormcell',starlit:'Starlit deep',silvermirror:'Silver mirror',sovgold:'Sovereign gold'}}
+  theme:{title:'App theme',def:'none',items:{none:'Default',reefglow:'Reefglow',stormcell:'Stormcell',starlit:'Starlit deep',silvermirror:'Silver mirror',sovgold:'Sovereign gold',haunted:'Haunted tide'}}
 };
 const THEMEASC={reefglow:2,stormcell:4,starlit:6,silvermirror:8,sovgold:10};
-const THPREV={reefglow:'linear-gradient(135deg,#052b27,#0a4a3f 55%,#34e0b4)',stormcell:'linear-gradient(135deg,#0f1a35,#2a3f85 55%,#ffd34d)',starlit:'linear-gradient(135deg,#190f36,#4a2399 55%,#ff8fd8)',silvermirror:'linear-gradient(135deg,#1b1f24,#4d5762 55%,#cfe3f2)',sovgold:'linear-gradient(135deg,#1a1204,#6b4a0c 55%,#f4c95d)',none:'linear-gradient(135deg,#e2eee8,#0b222c)'};
+const THPREV={reefglow:'linear-gradient(135deg,#052b27,#0a4a3f 55%,#34e0b4)',stormcell:'linear-gradient(135deg,#0f1a35,#2a3f85 55%,#ffd34d)',starlit:'linear-gradient(135deg,#190f36,#4a2399 55%,#ff8fd8)',silvermirror:'linear-gradient(135deg,#1b1f24,#4d5762 55%,#cfe3f2)',sovgold:'linear-gradient(135deg,#1a1204,#6b4a0c 55%,#f4c95d)',haunted:'linear-gradient(135deg,#1a0b2e,#4b1d6b 50%,#ff8a1f)',none:'linear-gradient(135deg,#e2eee8,#0b222c)'};
 const RARS=['common','rare','legendary','mythic','exotic','event'];
 const RN={common:'Common',rare:'Rare',legendary:'Legendary',mythic:'Mythic',exotic:'Exotic',event:'Event'};
 const RAR={
@@ -772,12 +785,15 @@ const RAR={
   'ripple:sparkle':'rare','ripple:stars':'rare','ripple:petals':'rare','ripple:embers':'legendary','ripple:tidal':'exotic',
   'pet:turtle':'rare','pet:manta':'legendary','pet:whale':'legendary','pet:sovereign':'exotic',
   'water:haunted':'event','reef:pumpkin':'event','ripple:spirits':'event','pet:phantom':'event',
-  'theme:reefglow':'exotic','theme:stormcell':'exotic','theme:starlit':'exotic','theme:silvermirror':'exotic','theme:sovgold':'exotic'
+  'theme:haunted':'event','theme:reefglow':'exotic','theme:stormcell':'exotic','theme:starlit':'exotic','theme:silvermirror':'exotic','theme:sovgold':'exotic'
 };
 const rarOf=k=>RAR[k]||'common';
 // Halloween shop: limited-time exotic skins bought with shells. Sale closes at midnight starting Nov 1 (local time).
-const HAL={end:new Date(2026,10,1,0,0,0).getTime(),items:{'water:haunted':100,'reef:pumpkin':150,'ripple:spirits':150,'pet:phantom':250}};
+const HAL={end:new Date(2026,10,1,0,0,0).getTime(),items:{'water:haunted':100,'reef:pumpkin':150,'ripple:spirits':150,'pet:phantom':250,'theme:haunted':500}};
+const HAL_SECRET='theme:haunted';
 const halOpen=()=>Date.now()<HAL.end;
+const halUnlocked=()=>Object.keys(HAL.items).every(k=>k===HAL_SECRET||S.skins[k]);
+const secretMasked=key=>key===HAL_SECRET&&!S.skins[key]&&halOpen()&&!halUnlocked();
 // Rotating shop: 5 items, at most 1 legendary, new stock every 5 hours. Never sells mythic, exotic or event skins.
 const SHOPNEW={'water:tropic':1,'water:ripplebay':1,'water:bloom':1,'reef:sunset':1,'reef:berry':1,'reef:glass':1,'ripple:drops':1,'ripple:confetti':1,'ripple:prism':1,'pet:fish':1,'pet:seahorse':1,'pet:angler':1};
 const SHOP_MS=5*3600*1000,SHOP_SLOTS=5,SHOP_PRICE={common:20,rare:60,legendary:150},SHOP_W={common:60,rare:30,legendary:10},SHOP_PASS_W=.3;
@@ -832,7 +848,10 @@ function seasonLeft(){
 }
 const tierCost=n=>60+12*(n-1);
 const cumXp=n=>6*n*n+54*n;
+const BONUS_T={105:100,110:150,125:250,150:500};
+const TLIST=[];for(let n=1;n<=TIERS;n++) TLIST.push(n);Object.keys(BONUS_T).forEach(k=>TLIST.push(+k));
 function tierReward(n){
+  if(BONUS_T[n]) return {shells:BONUS_T[n]};
   if(SK_TIER[n]) return {skin:SK_TIER[n]};
   if(MOON_TIER[n]) return {shells:3+5*MOON_TIER[n]};
   if(n>40) return {shells:5+Math.floor((n-40)/10)};
@@ -892,6 +911,7 @@ const ACH=[
 ].map(a=>({id:a[0],name:a[1],desc:a[2],cur:a[3],max:a[4],rw:a[5]}));
 function skinSrc(key){
   if(key.startsWith('theme:')&&THEMEASC[key.slice(6)]) return 'Reach ascension '+THEMEASC[key.slice(6)];
+  if(secretMasked(key)) return 'Secret';
   if(HAL.items[key]) return halOpen()?'Halloween shop':'Event ended';
   if(SHOPNEW[key]) return 'Rotating shop';
   for(const n in SK_TIER) if(SK_TIER[n]===key) return 'Pass tier '+n+(seasonOver()&&rarOf(key)!=='mythic'?', or shop':'');
@@ -1020,7 +1040,8 @@ function passTier(){
   return Math.min(TIERS,Math.max(0,n));
 }
 const ovPending=()=>Math.max(0,Math.floor(Math.max(0,S.xp-cumXp(TIERS))/400)-S.ovClaimed);
-function claimable(){let c=0;const t=passTier();for(let n=1;n<=t;n++) if(!S.claimed[n]) c++;return c;}
+const tierReached=n=>n<=TIERS?n<=passTier():S.xp>=cumXp(n);
+function claimable(){let c=0;for(const n of TLIST) if(tierReached(n)&&!S.claimed[n]) c++;return c;}
 function addXp(x,quiet){
   if(seasonOver()) return;
   const before=passTier();
@@ -1040,6 +1061,7 @@ function giveSkin(key,quiet){
 function buyHal(key,btn){
   const pr=HAL.items[key];
   if(!pr||!halOpen()||S.skins[key]||S.shells<pr) return;
+  if(key===HAL_SECRET&&!halUnlocked()) return;
   S.shells-=pr;
   giveSkin(key);
   const b=btn?rectC(btn):{x:FW/2,y:FH/2};
@@ -1091,6 +1113,7 @@ function updHal(){
   setText(HR.left,halLeft());
   for(const key in HAL.items){
     const o=HR[key],owned=!!S.skins[key],pr=HAL.items[key],can=!owned&&S.shells>=pr;
+    if(key===HAL_SECRET) o.row.hidden=!(halUnlocked()||owned);
     o.btn.classList.toggle('can',can);o.btn.disabled=owned||!can;
     setText(o.l1,owned?'Owned':'Buy');setText(o.l2,owned?'':fmt(pr)+' shells');
   }
@@ -1101,7 +1124,7 @@ function applyReward(r){
   if(r.xp) addXp(r.xp,true);
 }
 function claimTier(n,btn){
-  if(n>passTier()||S.claimed[n]) return;
+  if(!tierReached(n)||S.claimed[n]) return;
   S.claimed[n]=1;
   const r=tierReward(n);applyReward(r);
   const b=btn?rectC(btn):{x:FW/2,y:FH/2};
@@ -1111,8 +1134,8 @@ function claimTier(n,btn){
   updateUI();save();
 }
 function claimAll(btn){
-  const t=passTier();let c=0;
-  for(let n=1;n<=t;n++) if(!S.claimed[n]){S.claimed[n]=1;applyReward(tierReward(n));c++;}
+  let c=0;
+  for(const n of TLIST) if(tierReached(n)&&!S.claimed[n]){S.claimed[n]=1;applyReward(tierReward(n));c++;}
   if(c){const b=rectC(btn);confetti(b.x,b.y,30);toast('Claimed '+c+(c>1?' rewards.':' reward.'));}
   updateUI();save();
 }
@@ -1172,6 +1195,19 @@ function claimMission(i,btn){
   const b=rectC(btn),t=rectC(E.cShell);
   fly(b.x,b.y,t.x,t.y,'#f6b99b',Math.min(10,sh+3),()=>bump(E.cShell));
   toast(seasonOver()?'+'+sh+' shells':'+'+sh+' shells, +'+xp+' XP');
+  checkAch();updateUI();save();
+}
+function claimAllMissions(btn){
+  let sh=0,xp=0,c=0;
+  for(let i=0;i<slots();i++){
+    const m=S.missions[i];
+    if(m&&m.p>=m.target){sh+=mShells(m);xp+=mXp(m);c++;S.missions[i]=genMission();}
+  }
+  if(!c) return;
+  S.shells+=sh;addXp(xp);S.missionsDone+=c;
+  const b=rectC(btn),t=rectC(E.cShell);
+  fly(b.x,b.y,t.x,t.y,'#f6b99b',Math.min(12,c*2+3),()=>bump(E.cShell));
+  toast(seasonOver()?'+'+sh+' shells from '+c+' missions':'+'+sh+' shells, +'+xp+' XP from '+c+' missions');
   checkAch();updateUI();save();
 }
 function swapMission(i){
@@ -1237,6 +1273,7 @@ $('#p-pass').innerHTML=
    <div class="bar xp"><i id="ps-bar"></i></div>`+
   subSeg([['missions','Missions','bd-mis'],['track','Track','bd-track']])+
   `<div data-view="missions">
+     <button class="daily can" id="mclaimall" data-mclaimall="1" hidden>Claim all</button>
      <div id="mis"></div>
      <button class="daily" id="daily" data-daily="1">Daily catch</button>
      <p class="note">Finish missions for shells and pass XP. Every upgrade you buy also gives ${UPG_XP} XP. Spend shells in the Shop tab.</p>
@@ -1244,7 +1281,7 @@ $('#p-pass').innerHTML=
    <div data-view="track" hidden>
      <button class="daily can" id="claimall" data-claimall="1" hidden>Claim all</button>
      <div id="tiers"></div>
-     <div class="row noglyph" id="ovrow"><div class="info"><div class="name">Past tier ${TIERS}</div><div class="meta" id="ovmeta">Every 400 XP gives 5 shells.</div></div><button class="buy shellb slim" id="ovbtn" data-ov="1"><span class="l2">Claim</span></button></div>
+     <div class="row noglyph" id="ovrow"><div class="info"><div class="name">Past tier ${TIERS}</div><div class="meta" id="ovmeta">Every 400 XP gives 5 shells. Bonus tiers 105, 110, 125 and 150 pay big shell rewards.</div></div><button class="buy shellb slim" id="ovbtn" data-ov="1"><span class="l2">Claim</span></button></div>
    </div>`;
 $('#p-shop').innerHTML=
   `<div class="shead"><div class="bigshell"></div><div><div class="pnum" id="sh-count">0</div><div class="meta">Shells buy permanent upgrades. They never reset.</div></div></div>`+
@@ -1361,9 +1398,9 @@ for(let i=0;i<6;i++){
 }
 
 const TR=[];
-for(let n=1;n<=TIERS;n++){
+for(const n of TLIST){
   const row=document.createElement('div');
-  row.className='row trow';
+  row.className='row trow'+(n>TIERS?' big':'');
   row.innerHTML=`<div class="tb">${n}</div><div class="info"><div class="name"></div><div class="meta"></div></div><button class="buy shellb slim" data-tier="${n}"><span class="l2"></span></button>`;
   const r=tierReward(n);
   if(r.skin) row.className+=' r-'+rarOf(r.skin);
@@ -1418,7 +1455,7 @@ const SKR={};
       else if(c==='ripple'){sw.style.background='var(--seg)';sw.innerHTML=TAPSVG[id];}
       else{sw.style.background=({ring:'#9fd8e8',bubbles:'#bfeaf2',sparkle:'#ffe9a0',stars:'#ffd96a',embers:'#ff9a5a',petals:'#ffb3c9',tidal:'linear-gradient(135deg,#22d3ee,#ffd36a)',spirits:'linear-gradient(135deg,#f5f0ff,#ff8a1f)',phantom:'linear-gradient(135deg,#f5f0ff,#ff8a1f 70%,#3b1a5a)',none:'var(--seg)',jelly:'#ffbee6',turtle:'#7fb26b',manta:'#1f4f6b',whale:'#4b6fa5',sovereign:'linear-gradient(135deg,#2563eb,#22d3ee 55%,#ffd36a)'})[id];}
       wrap.appendChild(b);
-      SKR[key]={b,ss:b.querySelector('.ss')};
+      SKR[key]={b,ss:b.querySelector('.ss'),sn:b.querySelector('.sn'),sr:b.querySelector('.sr'),sw};
     }
   }
 })();
@@ -1432,12 +1469,13 @@ const HR={};
     row.className='hrow rb rar-event';
     row.innerHTML='<span class="sw"></span><div class="hi"><div class="hn"></div><div class="hm"></div></div><button class="buy shellb"><span class="l1">Buy</span><span class="l2"></span></button>';
     row.querySelector('.hn').textContent=CAT[p[0]].items[p[1]];
-    row.querySelector('.hm').textContent='Event '+({water:'water',reef:'reef colors',ripple:'tap effect',pet:'companion'})[p[0]];
+    row.querySelector('.hm').textContent='Event '+({water:'water',reef:'reef colors',ripple:'tap effect',pet:'companion',theme:'app theme'})[p[0]];
     const sw=SKR[key].b.querySelector('.sw'),dst=row.querySelector('.sw');dst.style.background=sw.style.background;dst.innerHTML=sw.innerHTML;
     const btn=row.querySelector('.buy');
     btn.addEventListener('click',()=>buyHal(key,btn));
     el.appendChild(row);
-    HR[key]={btn,l1:btn.querySelector('.l1'),l2:btn.querySelector('.l2')};
+    if(key===HAL_SECRET){row.hidden=true;row.querySelector('.hn').textContent=CAT.theme.items.haunted+' (secret)';}
+    HR[key]={row,btn,l1:btn.querySelector('.l1'),l2:btn.querySelector('.l2')};
   }
   HR.left=$('#hal-left');
 })();
@@ -1456,7 +1494,7 @@ ACH.forEach(a=>{
 
 const SP={pearls:$('#sp-pearls'),bonus:$('#sp-bonus'),bar:$('#sp-bar'),next:$('#sp-next'),btn:$('#sp-btn'),after:$('#sp-after')};
 const AS={rank:$('#as-rank'),moon:$('#as-moon'),bonus:$('#as-bonus'),bar:$('#as-bar'),next:$('#as-next'),btn:$('#as-btn'),after:$('#as-after')};
-const PS={tier:$('#ps-tier'),xp:$('#ps-xp'),bar:$('#ps-bar'),daily:$('#daily'),claimall:$('#claimall'),ovrow:$('#ovrow'),ovbtn:$('#ovbtn'),ovmeta:$('#ovmeta'),shells:$('#sh-count'),bd:$('#bd-track'),bm:$('#bd-mis'),left:$('#ps-left'),over:$('#ps-over')};
+const PS={tier:$('#ps-tier'),xp:$('#ps-xp'),bar:$('#ps-bar'),daily:$('#daily'),claimall:$('#claimall'),mclaimall:$('#mclaimall'),ovrow:$('#ovrow'),ovbtn:$('#ovbtn'),ovmeta:$('#ovmeta'),shells:$('#sh-count'),bd:$('#bd-track'),bm:$('#bd-mis'),left:$('#ps-left'),over:$('#ps-over')};
 const TRO={count:$('#tr-count'),bonus:$('#tr-bonus'),stats:$('#stats'),erase:$('#erase')};
 const segBtns=[...document.querySelectorAll('#seg button')];
 
@@ -1508,7 +1546,7 @@ function setSub(pk,name){
   updateUI();
   if(pk==='pass'&&name==='track'){
     const t=Math.max(1,Math.min(TIERS,passTier()+1));
-    panel.scrollTop=Math.max(0,TR[t].row.offsetTop-90);
+    const st=$('#tiers');st.scrollLeft=Math.max(0,TR[t].row.offsetLeft-st.offsetLeft-12);
   }
 }
 
@@ -1622,6 +1660,7 @@ document.addEventListener('click',e=>{
   else if(d.swap!==undefined) swapMission(+d.swap);
   else if(d.tier!==undefined) claimTier(+d.tier,b);
   else if(d.claimall!==undefined) claimAll(b);
+  else if(d.mclaimall!==undefined) claimAllMissions(b);
   else if(d.ov!==undefined) claimOverflow(b);
   else if(d.daily!==undefined) claimDaily(b);
   else if(d.skin) equipSkin(d.skin);
@@ -1954,6 +1993,9 @@ function updPass(){
       r.swap.hidden=done;
       r.swap.style.opacity=S.shells>=1?1:.4;
     }
+    let md=0;for(let i=0;i<n;i++){const m=S.missions[i];if(m&&m.p>=m.target) md++;}
+    PS.mclaimall.hidden=md<1;
+    if(md>0) setText(PS.mclaimall,'Claim all ('+md+')');
     const ready=dailyReady();
     PS.daily.classList.toggle('can',ready);
     setText(PS.daily,ready?(over?'Claim daily catch: 5 shells':'Claim daily catch: 5 shells and 100 XP'):'Daily catch ready in '+fmtTime(20*3600-(Date.now()-S.dailyAt)/1000));
@@ -1961,8 +2003,8 @@ function updPass(){
     const cl=claimable();
     PS.claimall.hidden=cl<1;
     if(cl>0) setText(PS.claimall,'Claim all ('+cl+')');
-    for(let n=1;n<=TIERS;n++){
-      const o=TR[n],reached=n<=t,got=!!S.claimed[n];
+    for(const n of TLIST){
+      const o=TR[n],reached=tierReached(n),got=!!S.claimed[n];
       o.row.classList.toggle('ready',reached&&!got);
       o.row.classList.toggle('got',got);
       o.row.classList.toggle('now',n===Math.min(TIERS,t+1)&&t<TIERS);
@@ -1993,6 +2035,12 @@ function updSkins(){
     if(vis) seen[p[0]]=1;
     o.b.classList.toggle('on',on);o.b.classList.toggle('lock',!owned);
     setText(o.ss,on?'Equipped':owned?'Tap to equip':skinSrc(key));
+    if(key===HAL_SECRET){
+      const m=secretMasked(key);
+      setText(o.sn,m?'Secret':CAT.theme.items.haunted);setText(o.sr,m?'Secret':RN[rarOf(key)]);
+      o.sw.style.background=m?'linear-gradient(135deg,#20202c,#3a3a4c)':THPREV.haunted;
+      setText(o.sw,m?'?':'');
+    }
   }
   for(const c in CATEL){CATEL[c].h.hidden=!seen[c];CATEL[c].wrap.hidden=!seen[c];}
   setText($('#sk-count'),own+' of '+tot+' skins owned');
