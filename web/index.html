@@ -475,7 +475,7 @@ h3{font-size:15px;font-weight:700;margin:16px 0 6px;color:var(--ink2)}
 const $=s=>document.querySelector(s);
 const KEY='tidepool-save-v1';
 /* ---- release settings: bump GAME_VERSION and version.json together on every release ---- */
-const GAME_VERSION='1.6.7';
+const GAME_VERSION='1.6.8';
 const UPDATE_URL='https://zhandermusic.github.io/tidepool/version.json';   // live version.json that desktop builds check for updates
 const STORE_URL='https://github.com/ZhanderMusic/tidepool/releases/latest';    // where installed (desktop) builds send players for updates
 const TAU=6.2832,rand=Math.random;
@@ -622,16 +622,16 @@ const RLORE=[
 ];
 const RHUE=[200,165,185,225,250,275,300,210,45,40];
 const RANK=[
-  {name:'Tidewatcher',mult:2,req:40},
-  {name:'Reefkeeper',mult:3,req:150},
-  {name:'Deepcaller',mult:4,req:500},
-  {name:'Stormwarden',mult:6,req:2000},
-  {name:'Moonwright',mult:10,req:8000},
-  {name:'Starcurrent',mult:16,req:3e4},
-  {name:'Dreamtide',mult:30,req:1.2e5},
-  {name:'Silverwake',mult:60,req:5e5},
-  {name:'Oceanheart',mult:150,req:2e6},
-  {name:'Tide Sovereign',mult:500,req:1e7}
+  {name:'Tidewatcher',mult:2,req:300},
+  {name:'Reefkeeper',mult:3,req:1500},
+  {name:'Deepcaller',mult:4,req:5000},
+  {name:'Stormwarden',mult:6,req:18000},
+  {name:'Moonwright',mult:10,req:60000},
+  {name:'Starcurrent',mult:16,req:180000},
+  {name:'Dreamtide',mult:30,req:550000},
+  {name:'Silverwake',mult:60,req:1.8e6},
+  {name:'Oceanheart',mult:150,req:5e6},
+  {name:'Tide Sovereign',mult:500,req:1.5e7}
 ];
 // every ascension unlocks 5 deeper reefs (and 3 tides, below)
 const EXT_NAMES=[
